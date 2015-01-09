@@ -26,7 +26,7 @@ if (!file.exists("household_power_consumption.txt")){
 numberofrows = 1440*numberofdays
 
 # Read the data
-studydata <- fread("household_power_consumption.txt", 
+dtpowerconsumption <- fread("household_power_consumption.txt", 
                    sep=";", 
                    skip = fromdate,
                    nrows = numberofrows,
@@ -35,19 +35,19 @@ studydata <- fread("household_power_consumption.txt",
                    colClasses = c("character", "character", rep("numeric",7)))
 
 # Extract columns names.
-setnames(studydata,colnames(fread("household_power_consumption.txt",nrows = 0)))
+setnames(dtpowerconsumption,colnames(fread("household_power_consumption.txt",nrows = 0)))
 
 # Convert character date and time character varibles to time/date classes
-studydata$Time <- as.POSIXct(strptime(paste( studydata$Date,studydata$Time),
+dtpowerconsumption$Time <- as.POSIXct(strptime(paste( dtpowerconsumption$Date,dtpowerconsumption$Time),
                                       "%d/%m/%Y %H:%M:%S" ))
 
-studydata$Date <- as.Date(studydata$Date, "%d/%m/%Y")
+dtpowerconsumption$Date <- as.Date(dtpowerconsumption$Date, "%d/%m/%Y")
 
 # Open png device connection
 png("plot2.png")
 
     # Generating the plot
-    with(studydata,plot(Time, Global_active_power,
+    with(dtpowerconsumption,plot(Time, Global_active_power,
                         type="l",
                         xlab ="",
                         ylab = "Global Active Power (kilowatts)"))

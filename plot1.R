@@ -25,8 +25,8 @@ if (!file.exists("household_power_consumption.txt")){
 # number of rows equals minutes per day multiplied by number of days 1440. 
 numberofrows = 1440*numberofdays
 
-# Read the data
-studydata <- fread("household_power_consumption.txt", 
+# Read the data into a  data table
+dtpowerconsumption <- fread("household_power_consumption.txt", 
                    sep=";", 
                    skip = fromdate,
                    nrows = numberofrows,
@@ -35,19 +35,19 @@ studydata <- fread("household_power_consumption.txt",
                    colClasses = c("character", "character", rep("numeric",7)))
 
 # Extract columns names.
-setnames(studydata,colnames(fread("household_power_consumption.txt",nrows = 0)))
+setnames(dtpowerconsumption,colnames(fread("household_power_consumption.txt",nrows = 0)))
 
 # Convert character date and time character varibles to time/date classes
-studydata$Time <- as.POSIXct(strptime(paste( studydata$Date,studydata$Time),
+dtpowerconsumption$Time <- as.POSIXct(strptime(paste( dtpowerconsumption$Date,dtpowerconsumption$Time),
                                       "%d/%m/%Y %H:%M:%S" ))
 
-studydata$Date <- as.Date(studydata$Date, "%d/%m/%Y")
+dtpowerconsumption$Date <- as.Date(dtpowerconsumption$Date, "%d/%m/%Y")
 
 # Open png device connection
 png("plot1.png")
 
     # Generating the histogram
-    with(studydata, hist(Global_active_power, 
+    with(dtpowerconsumption, hist(Global_active_power, 
                         breaks = 12,
                         col = "red",
                         xlab = "Global Active Power (kilowatts)",

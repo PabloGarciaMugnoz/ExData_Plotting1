@@ -27,7 +27,7 @@ if (!file.exists("household_power_consumption.txt")){
 numberofrows = 1440*numberofdays
 
 # Read the data
-studydata <- fread("household_power_consumption.txt", 
+dtpowerconsumption <- fread("household_power_consumption.txt", 
                    sep=";", 
                    skip = fromdate,
                    nrows = numberofrows,
@@ -36,13 +36,13 @@ studydata <- fread("household_power_consumption.txt",
                    colClasses = c("character", "character", rep("numeric",7)))
 
 # Extract columns names.
-setnames(studydata,colnames(fread("household_power_consumption.txt",nrows = 0)))
+setnames(dtpowerconsumption,colnames(fread("household_power_consumption.txt",nrows = 0)))
 
 # Convert character date and time character varibles to time/date classes
-studydata$Time <- as.POSIXct(strptime(paste( studydata$Date,studydata$Time),
+dtpowerconsumption$Time <- as.POSIXct(strptime(paste( dtpowerconsumption$Date,dtpowerconsumption$Time),
                                       "%d/%m/%Y %H:%M:%S" ))
 
-studydata$Date <- as.Date(studydata$Date, "%d/%m/%Y")
+dtpowerconsumption$Date <- as.Date(dtpowerconsumption$Date, "%d/%m/%Y")
 
 
 # Open png device connection
@@ -50,32 +50,32 @@ png("plot4.png")
 
 # Generating the plot, it contains 4 subplot
 par(mfcol = c(2, 2))
-with(studydata, {
+with(dtpowerconsumption, {
     # Subplot 1
-    with(studydata, plot(Time, Global_active_power,
+    with(dtpowerconsumption, plot(Time, Global_active_power,
                         type="l",
-                        ylab = "Global Active Power (kilowatts)",
+                        ylab = "Global Active Power",
                         xlab =""))
     # subplot 2
-    with(studydata,plot(Time, Sub_metering_1,
+    with(dtpowerconsumption,plot(Time, Sub_metering_1,
                         type="l",
                         ylab = "Energy sub metering",
                         xlab =""))
     # Adding two more lines
-    with(studydata, lines(Time, Sub_metering_2, col = "red"))
-    with(studydata, lines(Time, Sub_metering_3, col = "blue"))
+    with(dtpowerconsumption, lines(Time, Sub_metering_2, col = "red"))
+    with(dtpowerconsumption, lines(Time, Sub_metering_3, col = "blue"))
     legend("topright", lty = 1, col = c("black", "blue", "red"),bty = "n",
        legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
 
     # Subplot 3
-    with(studydata,plot(Time, Voltage, type = "l",
+    with(dtpowerconsumption,plot(Time, Voltage, type = "l",
                         xlab = "datetime", 
                         ylab = "Voltage"))
     # Subplot 4
-    with(studydata,plot(Time, Global_reactive_power,
+    with(dtpowerconsumption,plot(Time, Global_reactive_power,
                         type = "l",
                         xlab = "datetime",
-                        ylab = "Voltage"))
+                        ylab = "Global_reactive_power"))
 })
 
 # Closing connection with png device
